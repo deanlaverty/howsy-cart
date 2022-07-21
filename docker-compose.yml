@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    ports:
+      - "8088:80"
+    depends_on:
+      - app
+    networks:
+      - howsycart
+    volumes:
+      - "./:/var/www/html"
+      - "./build/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+
+  app:
+    image: howsycart
+    build:
+      args:
+        user: howsycart
+        uid: 1000
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: howsycart
+    restart: unless-stopped
+    volumes:
+      - "./:/var/www/html"
+    ports: 
+      - "9000:9000"
+    networks:
+      - howsycart
+
+networks:
+  howsycart:
