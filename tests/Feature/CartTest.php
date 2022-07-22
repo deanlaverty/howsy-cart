@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use DI\Container;
 use Library\Cart\Cart;
+use Library\Cart\Exceptions\CartAlreadyExistsException;
 use Library\User\Interfaces\UserServiceInterface;
 use Library\User\User;
 use Mockery;
@@ -31,6 +32,18 @@ final class CartTest extends TestCase
         $cart = $cart->create($user);
 
         $this->assertInstanceOf(Cart::class, $cart);
+    }
+
+    public function test_cart_throws_exception_when_created_twice(): void
+    {
+        $user = new User(1, 'John Doe');
+        $cart = new Cart($this->container->get(UserServiceInterface::class));
+        $cart = $cart->create($user);
+
+        $this->expectException(CartAlreadyExistsException::class);
+        $this->expectErrorMessage('Cart already exists for user.');
+
+        $cart->create($user);
     }
 
     public function test_cart_can_be_created_with_discount(): void
