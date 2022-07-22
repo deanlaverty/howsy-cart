@@ -1,0 +1,24 @@
+{
+    "name": "root/howsy-cart",
+    "require": {
+        "phpunit/phpunit": "^9.5",
+        "mockery/mockery": "^1.5",
+        "php-di/php-di": "^6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Library\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dean Laverty",
+            "email": "deannooel@gmail.com"
+        }
+    ]
+}
