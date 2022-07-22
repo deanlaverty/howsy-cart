@@ -16,10 +16,12 @@ use PHPUnit\Framework\TestCase;
 final class CartTest extends TestCase
 {
     protected Container $container;
+    private Cart $cart;
 
     public function setUp(): void
     {
         $this->container = require __DIR__ . '../../bootstrap.php';
+        $this->cart = new Cart($this->container->get(UserServiceInterface::class));
 
         parent::setUp();
     }
@@ -27,9 +29,7 @@ final class CartTest extends TestCase
     public function test_cart_can_be_created_successfully(): void
     {
         $user = new User(1, 'John Doe');
-        $cart = new Cart($this->container->get(UserServiceInterface::class));
-
-        $cart = $cart->create($user);
+        $cart = $this->cart->create($user);
 
         $this->assertInstanceOf(Cart::class, $cart);
     }
@@ -37,8 +37,7 @@ final class CartTest extends TestCase
     public function test_cart_throws_exception_when_created_twice(): void
     {
         $user = new User(1, 'John Doe');
-        $cart = new Cart($this->container->get(UserServiceInterface::class));
-        $cart = $cart->create($user);
+        $cart = $this->cart->create($user);
 
         $this->expectException(CartAlreadyExistsException::class);
         $this->expectErrorMessage('Cart already exists for user.');
@@ -49,9 +48,7 @@ final class CartTest extends TestCase
     public function test_cart_can_be_created_with_discount(): void
     {
         $user = new User(1, 'John Doe');
-        $cart = new Cart($this->container->get(UserServiceInterface::class));
-
-        $cart = $cart->create($user);
+        $cart = $this->cart->create($user);
 
         $expectedDiscounts = [
             Cart::USER_AGREED_CONTRACT_DISCOUNT,
