@@ -19,8 +19,12 @@ final class Item
         return $this->product;
     }
 
+    /**
+     * Returns price in pence
+     * @return int
+     */
     public function getPrice(): int
     {
-        return $this->product->getPrice();
+        return intval($this->product->getPrice() * 100);
     }
 }

@@ -73,7 +73,7 @@ final class Cart
         return $this->items;
     }
 
-    public function getTotal(): int
+    public function getTotal(): float
     {
         $total = 0;
 
@@ -87,6 +87,7 @@ final class Cart
             }
         }
 
-        return $total;
+        // Return price from pence to pounds
+        return round($total / 100, 2);
     }
 }

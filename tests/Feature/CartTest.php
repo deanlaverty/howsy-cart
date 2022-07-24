@@ -86,7 +86,7 @@ final class CartTest extends TestCase
     {
         $user = new User(1, 'John Doe');
         $cart = $this->cart->create($user);
-        $product = new Product('P001', 'Photography', 200);
+        $product = new Product('P001', 'Photography', 200.00);
 
         $cart->addItem($product->getCode());
 
@@ -98,7 +98,7 @@ final class CartTest extends TestCase
     {
         $user = new User(1, 'John Doe');
         $cart = $this->cart->create($user);
-        $product = new Product('P001', 'Photography', 200);
+        $product = new Product('P001', 'Photography', 200.00);
 
         $cart->addItem($product->getCode());
 
@@ -124,8 +124,8 @@ final class CartTest extends TestCase
     {
         $user = new User(1, 'John Doe');
         $cart = $this->cart->create($user);
-        $product = new Product('P001', 'Photography', 200);
-        $productTwo = new Product('P002', 'Floorplan', 100);
+        $product = new Product('P001', 'Photography', 200.00);
+        $productTwo = new Product('P002', 'Floorplan', 100.00);
 
         $cart->addItem($product->getCode());
         $cart->addItem($productTwo->getCode());
@@ -152,14 +152,20 @@ final class CartTest extends TestCase
             Discount::PERCENTAGE
         );
 
-        $product = new Product('P001', 'Photography', 200);
-        $productTwo = new Product('P002', 'Floorplan', 100);
+        $product = new Product('P001', 'Photography', 200.00);
+        $productTwo = new Product('P002', 'Floorplan', 100.00);
 
         $cart->addItem($product->getCode());
         $cart->addItem($productTwo->getCode());
 
-        $expectedTotal = $product->getPrice() + $productTwo->getPrice();
+        $expectedTotal = 0;
+
+        foreach ($cart->getItems() as $item) {
+            $expectedTotal += $item->getPrice();
+        }
+
         $expectedTotal -= $discount->calculate($expectedTotal);
+        $expectedTotal = round($expectedTotal / 100, 2);
 
         $this->assertSame($expectedTotal, $cart->getTotal());
     }

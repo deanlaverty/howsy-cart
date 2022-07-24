@@ -9,7 +9,7 @@ final class Product
     public function __construct(
         private readonly string $code,
         private readonly string $name,
-        private readonly int    $price
+        private readonly float    $price
     ) {
 
     }
@@ -24,7 +24,7 @@ final class Product
         return $this->name;
     }
 
-    public function getPrice(): int
+    public function getPrice(): float
     {
         return $this->price;
     }

@@ -16,22 +16,22 @@ final class ProductService implements ProductServiceInterface
             [
                 'code' => 'P001',
                 'name' => 'Photography',
-                'price' => 200,
+                'price' => 200.00,
             ],
             [
                 'code' => 'P002',
                 'name' => 'Floorplan',
-                'price' => 100,
+                'price' => 100.00,
             ],
             [
                 'code' => 'P003',
                 'name' => 'Gas Certificate',
-                'price' => 8350,
+                'price' => 83.50,
             ],
             [
                 'code' => 'P004',
                 'name' => 'EICR Certificate',
-                'price' => 5100,
+                'price' => 51.00,
             ],
         ];
 
