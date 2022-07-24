@@ -1,11 +1,11 @@
 <?php
 
-use function DI\create;
+use Library\Product\Interfaces\ProductServiceInterface;
 
+use Library\Product\Services\ProductService;
 use Library\User\Interfaces\UserServiceInterface;
 use Library\User\Services\UserService;
-use Library\Product\Interfaces\ProductServiceInterface;
-use Library\Product\Services\ProductService;
+use function DI\create;
 
 // Container bindings
 return [

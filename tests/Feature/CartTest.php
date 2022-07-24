@@ -172,7 +172,7 @@ final class CartTest extends TestCase
 
     private function mockUserServiceWithDiscount()
     {
-        $userService = Mockery::mock(UserServiceInterface::class, function(MockInterface $mock) {
+        $userService = Mockery::mock(UserServiceInterface::class, function (MockInterface $mock) {
             $mock->shouldReceive('hasAgreedToContract')
                 ->once()
                 ->andReturn(true);
