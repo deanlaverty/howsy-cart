@@ -49,9 +49,9 @@ final class Cart
         return $this;
     }
 
-    public function addItem(Product $product): self
+    public function addItem(string $productCode): self
     {
-        $product = $this->productService->getProductByCode($product->getCode());
+        $product = $this->productService->getProductByCode($productCode);
 
         if (array_key_exists($product->getCode(), $this->getItems())) {
             throw new CartItemAlreadyExists('Cart item already exists.');

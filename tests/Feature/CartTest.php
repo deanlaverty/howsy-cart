@@ -9,6 +9,7 @@ use Library\Cart\Cart;
 use Library\Cart\Discount;
 use Library\Cart\Exceptions\CartAlreadyExistsException;
 use Library\Cart\Exceptions\CartItemAlreadyExists;
+use Library\Product\Exceptions\ProductNotFoundException;
 use Library\Product\Interfaces\ProductServiceInterface;
 use Library\Product\Product;
 use Library\User\Interfaces\UserServiceInterface;
@@ -87,7 +88,7 @@ final class CartTest extends TestCase
         $cart = $this->cart->create($user);
         $product = new Product('P001', 'Photography', 200);
 
-        $cart->addItem($product);
+        $cart->addItem($product->getCode());
 
         $this->assertArrayHasKey($product->getCode(), $cart->getItems());
         $this->assertSame($product->getPrice(), $cart->getTotal());
@@ -99,12 +100,39 @@ final class CartTest extends TestCase
         $cart = $this->cart->create($user);
         $product = new Product('P001', 'Photography', 200);
 
-        $cart->addItem($product);
+        $cart->addItem($product->getCode());
 
         $this->expectException(CartItemAlreadyExists::class);
         $this->expectErrorMessage('Cart item already exists.');
 
-        $cart->addItem($product);
+        $cart->addItem($product->getCode());
+    }
+
+    public function test_cart_can_not_add_invalid_item(): void
+    {
+        $user = new User(1, 'John Doe');
+        $cart = $this->cart->create($user);
+        $product = new Product('INVALIDCODE', 'Photography', 200);
+
+        $this->expectException(ProductNotFoundException::class);
+        $this->expectErrorMessage('Product not found.');
+
+        $cart->addItem($product->getCode());
+    }
+
+    public function test_cart_can_calculate_correct_total(): void
+    {
+        $user = new User(1, 'John Doe');
+        $cart = $this->cart->create($user);
+        $product = new Product('P001', 'Photography', 200);
+        $productTwo = new Product('P002', 'Floorplan', 100);
+
+        $cart->addItem($product->getCode());
+        $cart->addItem($productTwo->getCode());
+
+        $expectedTotal = $product->getPrice() + $productTwo->getPrice();
+
+        $this->assertSame($expectedTotal, $cart->getTotal());
     }
 
     private function mockUserServiceWithDiscount()
