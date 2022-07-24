@@ -10,7 +10,6 @@ final class Item
 {
     public function __construct(
         private Product $product,
-        private int $price,
     ) {
 
     }
@@ -22,6 +21,6 @@ final class Item
 
     public function getPrice(): int
     {
-        return $this->price;
+        return $this->product->getPrice();
     }
 }

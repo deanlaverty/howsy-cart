@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use DI\Container;
 use Library\Cart\Cart;
 use Library\Cart\Exceptions\CartAlreadyExistsException;
+use Library\Product\Product;
 use Library\User\Interfaces\UserServiceInterface;
 use Library\User\User;
 use Mockery;
@@ -21,7 +22,9 @@ final class CartTest extends TestCase
     public function setUp(): void
     {
         $this->container = require __DIR__ . '../../bootstrap.php';
-        $this->cart = new Cart($this->container->get(UserServiceInterface::class));
+        $this->cart = new Cart(
+            $this->container->get(UserServiceInterface::class)
+        );
 
         parent::setUp();
     }
@@ -67,6 +70,18 @@ final class CartTest extends TestCase
         $cart = $cart->create($user);
 
         $this->assertEquals($cart->getDiscounts(), []);
+    }
+
+    public function test_cart_can_add_item(): void
+    {
+        $user = new User(1, 'John Doe');
+        $cart = $this->cart->create($user);
+        $product = new Product('P001', 'Photography', 200);
+
+        $cart->addItem($product);
+
+        $this->assertContains($product, $cart->getItems());
+        $this->assertSame($product->getPrice(), $cart->getTotal());
     }
 
     private function mockUserServiceWithNoDiscount()
