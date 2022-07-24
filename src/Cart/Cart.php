@@ -7,7 +7,6 @@ namespace Library\Cart;
 use Library\Cart\Exceptions\CartAlreadyExistsException;
 use Library\Cart\Exceptions\CartItemAlreadyExists;
 use Library\Product\Interfaces\ProductServiceInterface;
-use Library\Product\Product;
 use Library\User\Interfaces\UserServiceInterface;
 use Library\User\User;
 

@@ -153,7 +153,7 @@ final class CartTest extends TestCase
         );
 
         $product = new Product('P001', 'Photography', 200.00);
-        $productTwo = new Product('P002', 'Floorplan', 100.00);
+        $productTwo = new Product('P003', 'Floorplan', 83.50);
 
         $cart->addItem($product->getCode());
         $cart->addItem($productTwo->getCode());
