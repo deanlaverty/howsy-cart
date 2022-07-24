@@ -20,5 +20,8 @@
             "name": "Dean Laverty",
             "email": "deannooel@gmail.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "symplify/easy-coding-standard": "^11.0"
+    }
 }
