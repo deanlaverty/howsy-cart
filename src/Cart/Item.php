@@ -11,7 +11,6 @@ final class Item
     public function __construct(
         private Product $product,
     ) {
-
     }
 
     public function getProduct(): Product

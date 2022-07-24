@@ -12,7 +12,7 @@ use Library\User\User;
 
 final class Cart
 {
-    const USER_AGREED_CONTRACT_DISCOUNT = 10;
+    public const USER_AGREED_CONTRACT_DISCOUNT = 10;
 
     private ?User $user = null;
     private array $discounts = [];
@@ -21,8 +21,7 @@ final class Cart
     public function __construct(
         private readonly UserServiceInterface $userService,
         private readonly ProductServiceInterface $productService
-    ){
-
+    ) {
     }
 
     public function create(User $user): self
@@ -80,7 +79,7 @@ final class Cart
             $total += $item->getPrice();
         }
 
-        if (! empty($this->discounts)) {
+        if (!empty($this->discounts)) {
             foreach ($this->discounts as $discount) {
                 $total -= $discount->calculate(total: $total);
             }

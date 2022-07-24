@@ -11,7 +11,6 @@ final class Product
         private readonly string $name,
         private readonly float    $price
     ) {
-
     }
 
     public function getCode(): string

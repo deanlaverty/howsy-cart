@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Library\Cart\Cart;
 use Library\Cart\Item;
 use Library\Product\Product;
 use PHPUnit\Framework\TestCase;

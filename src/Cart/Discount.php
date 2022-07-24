@@ -11,7 +11,7 @@ final class Discount
     public function __construct(
         private readonly int $amount,
         private readonly string $type
-    ){
+    ) {
     }
 
     public function getAmount(): int
