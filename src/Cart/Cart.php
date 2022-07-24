@@ -39,8 +39,9 @@ final class Cart
         return $this;
     }
 
-    public function addDiscount(int $discount): self
+    public function addDiscount(int $discount, string $type = Discount::PERCENTAGE): self
     {
+        $discount = new Discount(amount: $discount, type: $type);
         $this->discounts[] = $discount;
 
         return $this;
@@ -52,7 +53,7 @@ final class Cart
             throw new CartItemAlreadyExists('Cart item already exists.');
         }
 
-        $item = new Item($product);
+        $item = new Item(product: $product);
         $this->items[$product->getCode()] = $item;
 
         return $this;
@@ -74,6 +75,12 @@ final class Cart
 
         foreach ($this->items as $item) {
             $total += $item->getPrice();
+        }
+
+        if (! empty($this->discounts)) {
+            foreach ($this->discounts as $discount) {
+                $total -= $discount->calculate(total: $total);
+            }
         }
 
         return $total;

@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use DI\Container;
 use Library\Cart\Cart;
+use Library\Cart\Discount;
 use Library\Cart\Exceptions\CartAlreadyExistsException;
 use Library\Cart\Exceptions\CartItemAlreadyExists;
 use Library\Product\Product;
@@ -54,11 +55,14 @@ final class CartTest extends TestCase
         $user = new User(1, 'John Doe');
         $cart = $this->cart->create($user);
 
-        $expectedDiscounts = [
+        $discount = new Discount(
             Cart::USER_AGREED_CONTRACT_DISCOUNT,
-        ];
+            Discount::PERCENTAGE
+        );
 
-        $this->assertEquals($cart->getDiscounts(), $expectedDiscounts);
+        $expectedDiscount = $cart->getDiscounts()[0];
+
+        $this->assertEquals($discount, $expectedDiscount);
     }
 
     public function test_cart_can_be_created_without_discount(): void
@@ -81,8 +85,10 @@ final class CartTest extends TestCase
 
         $cart->addItem($product);
 
+        $expectedTotalWithDiscount = 180;
+
         $this->assertArrayHasKey($product->getCode(), $cart->getItems());
-        $this->assertSame($product->getPrice(), $cart->getTotal());
+        $this->assertSame($expectedTotalWithDiscount, $cart->getTotal());
     }
 
     public function test_cart_can_not_add_same_item_twice(): void
