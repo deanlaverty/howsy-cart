@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use DI\Container;
 use Library\Cart\Cart;
 use Library\Cart\Exceptions\CartAlreadyExistsException;
+use Library\Cart\Exceptions\CartItemAlreadyExists;
 use Library\Product\Product;
 use Library\User\Interfaces\UserServiceInterface;
 use Library\User\User;
@@ -80,8 +81,22 @@ final class CartTest extends TestCase
 
         $cart->addItem($product);
 
-        $this->assertContains($product, $cart->getItems());
+        $this->assertArrayHasKey($product->getCode(), $cart->getItems());
         $this->assertSame($product->getPrice(), $cart->getTotal());
+    }
+
+    public function test_cart_can_not_add_same_item_twice(): void
+    {
+        $user = new User(1, 'John Doe');
+        $cart = $this->cart->create($user);
+        $product = new Product('P001', 'Photography', 200);
+
+        $cart->addItem($product);
+
+        $this->expectException(CartItemAlreadyExists::class);
+        $this->expectErrorMessage('Cart item already exists.');
+
+        $cart->addItem($product);
     }
 
     private function mockUserServiceWithNoDiscount()
