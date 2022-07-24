@@ -135,6 +135,35 @@ final class CartTest extends TestCase
         $this->assertSame($expectedTotal, $cart->getTotal());
     }
 
+    public function test_cart_can_calculate_correct_total_with_discount(): void
+    {
+        $this->mockUserServiceWithDiscount();
+
+        $user = new User(1, 'John Doe');
+        $cart = new Cart(
+            $this->container->get(UserServiceInterface::class),
+            $this->container->get(ProductServiceInterface::class)
+        );
+
+        $cart = $cart->create($user);
+
+        $discount = new Discount(
+            Cart::USER_AGREED_CONTRACT_DISCOUNT,
+            Discount::PERCENTAGE
+        );
+
+        $product = new Product('P001', 'Photography', 200);
+        $productTwo = new Product('P002', 'Floorplan', 100);
+
+        $cart->addItem($product->getCode());
+        $cart->addItem($productTwo->getCode());
+
+        $expectedTotal = $product->getPrice() + $productTwo->getPrice();
+        $expectedTotal -= $discount->calculate($expectedTotal);
+
+        $this->assertSame($expectedTotal, $cart->getTotal());
+    }
+
     private function mockUserServiceWithDiscount()
     {
         $userService = Mockery::mock(UserServiceInterface::class, function(MockInterface $mock) {
