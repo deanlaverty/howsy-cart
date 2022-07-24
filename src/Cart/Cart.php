@@ -6,6 +6,7 @@ namespace Library\Cart;
 
 use Library\Cart\Exceptions\CartAlreadyExistsException;
 use Library\Cart\Exceptions\CartItemAlreadyExists;
+use Library\Product\Interfaces\ProductServiceInterface;
 use Library\Product\Product;
 use Library\User\Interfaces\UserServiceInterface;
 use Library\User\User;
@@ -20,6 +21,7 @@ final class Cart
 
     public function __construct(
         private readonly UserServiceInterface $userService,
+        private readonly ProductServiceInterface $productService
     ){
 
     }
@@ -49,6 +51,8 @@ final class Cart
 
     public function addItem(Product $product): self
     {
+        $product = $this->productService->getProductByCode($product->getCode());
+
         if (array_key_exists($product->getCode(), $this->getItems())) {
             throw new CartItemAlreadyExists('Cart item already exists.');
         }

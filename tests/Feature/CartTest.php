@@ -9,6 +9,7 @@ use Library\Cart\Cart;
 use Library\Cart\Discount;
 use Library\Cart\Exceptions\CartAlreadyExistsException;
 use Library\Cart\Exceptions\CartItemAlreadyExists;
+use Library\Product\Interfaces\ProductServiceInterface;
 use Library\Product\Product;
 use Library\User\Interfaces\UserServiceInterface;
 use Library\User\User;
@@ -25,7 +26,8 @@ final class CartTest extends TestCase
     {
         $this->container = require __DIR__ . '../../bootstrap.php';
         $this->cart = new Cart(
-            $this->container->get(UserServiceInterface::class)
+            $this->container->get(UserServiceInterface::class),
+            $this->container->get(ProductServiceInterface::class)
         );
 
         parent::setUp();
@@ -50,10 +52,25 @@ final class CartTest extends TestCase
         $cart->create($user);
     }
 
-    public function test_cart_can_be_created_with_discount(): void
+    public function test_cart_can_be_created_without_discount(): void
     {
         $user = new User(1, 'John Doe');
         $cart = $this->cart->create($user);
+
+        $this->assertEquals($cart->getDiscounts(), []);
+    }
+
+    public function test_cart_can_be_created_with_discount(): void
+    {
+        $this->mockUserServiceWithDiscount();
+
+        $user = new User(1, 'John Doe');
+        $cart = new Cart(
+            $this->container->get(UserServiceInterface::class),
+            $this->container->get(ProductServiceInterface::class)
+        );
+
+        $cart = $cart->create($user);
 
         $discount = new Discount(
             Cart::USER_AGREED_CONTRACT_DISCOUNT,
@@ -61,20 +78,7 @@ final class CartTest extends TestCase
         );
 
         $expectedDiscount = $cart->getDiscounts()[0];
-
         $this->assertEquals($discount, $expectedDiscount);
-    }
-
-    public function test_cart_can_be_created_without_discount(): void
-    {
-        $this->mockUserServiceWithNoDiscount();
-
-        $user = new User(1, 'John Doe');
-        $cart = new Cart($this->container->get(UserServiceInterface::class));
-
-        $cart = $cart->create($user);
-
-        $this->assertEquals($cart->getDiscounts(), []);
     }
 
     public function test_cart_can_add_item(): void
@@ -85,10 +89,8 @@ final class CartTest extends TestCase
 
         $cart->addItem($product);
 
-        $expectedTotalWithDiscount = 180;
-
         $this->assertArrayHasKey($product->getCode(), $cart->getItems());
-        $this->assertSame($expectedTotalWithDiscount, $cart->getTotal());
+        $this->assertSame($product->getPrice(), $cart->getTotal());
     }
 
     public function test_cart_can_not_add_same_item_twice(): void
@@ -105,12 +107,12 @@ final class CartTest extends TestCase
         $cart->addItem($product);
     }
 
-    private function mockUserServiceWithNoDiscount()
+    private function mockUserServiceWithDiscount()
     {
         $userService = Mockery::mock(UserServiceInterface::class, function(MockInterface $mock) {
             $mock->shouldReceive('hasAgreedToContract')
                 ->once()
-                ->andReturn(false);
+                ->andReturn(true);
         })->makePartial();
 
         $this->container->set(UserServiceInterface::class, $userService);

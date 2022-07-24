@@ -11,6 +11,6 @@ final class UserService implements UserServiceInterface
 {
     public function hasAgreedToContract(User $user): bool
     {
-        return true;
+        return false;
     }
 }

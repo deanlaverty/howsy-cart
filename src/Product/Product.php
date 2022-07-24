@@ -28,4 +28,9 @@ final class Product
     {
         return $this->price;
     }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(...$data);
+    }
 }
