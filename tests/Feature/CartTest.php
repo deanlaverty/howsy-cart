@@ -17,6 +17,7 @@ use Library\User\User;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 final class CartTest extends TestCase
 {
@@ -26,10 +27,7 @@ final class CartTest extends TestCase
     public function setUp(): void
     {
         $this->container = require __DIR__ . '../../bootstrap.php';
-        $this->cart = new Cart(
-            $this->container->get(UserServiceInterface::class),
-            $this->container->get(ProductServiceInterface::class)
-        );
+        $this->cart = $this->container->get(Cart::class);
 
         parent::setUp();
     }
@@ -63,13 +61,10 @@ final class CartTest extends TestCase
 
     public function test_cart_can_be_created_with_discount(): void
     {
-        $this->mockUserServiceWithDiscount();
+        $this->mockCartWithDiscount();
 
         $user = new User(1, 'John Doe');
-        $cart = new Cart(
-            $this->container->get(UserServiceInterface::class),
-            $this->container->get(ProductServiceInterface::class)
-        );
+        $cart = $this->container->get(Cart::class);
 
         $cart = $cart->create($user);
 
@@ -137,13 +132,10 @@ final class CartTest extends TestCase
 
     public function test_cart_can_calculate_correct_total_with_discount(): void
     {
-        $this->mockUserServiceWithDiscount();
+        $this->mockCartWithDiscount();
 
         $user = new User(1, 'John Doe');
-        $cart = new Cart(
-            $this->container->get(UserServiceInterface::class),
-            $this->container->get(ProductServiceInterface::class)
-        );
+        $cart = $this->container->get(Cart::class);
 
         $cart = $cart->create($user);
 
@@ -170,7 +162,7 @@ final class CartTest extends TestCase
         $this->assertSame($expectedTotal, $cart->getTotal());
     }
 
-    private function mockUserServiceWithDiscount()
+    private function mockCartWithDiscount()
     {
         $userService = Mockery::mock(UserServiceInterface::class, function (MockInterface $mock) {
             $mock->shouldReceive('hasAgreedToContract')
@@ -179,5 +171,12 @@ final class CartTest extends TestCase
         })->makePartial();
 
         $this->container->set(UserServiceInterface::class, $userService);
+
+        $this->container->set(Cart::class, function (ContainerInterface $c) {
+            return new Cart(
+                $c->get(UserServiceInterface::class),
+                $c->get(ProductServiceInterface::class)
+            );
+        });
     }
 }
