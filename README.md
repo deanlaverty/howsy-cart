@@ -1,6 +1,6 @@
 # Howsy Basket Test
 
-#### Cart library built on Docker using PHP 8.1 and nginx. It was built without a frontend and runs of PHPUnit testing using Mockery. 
+#### Cart library built on Docker using PHP 8.1 and nginx. It was built without a frontend and runs of PHPUnit testing using Mockery. The URL will be http://localhost:8088 
 
 ## Setup
 
