@@ -56,3 +56,8 @@ $cart->getItems();
 ```
 $cart->getTotal();
 ```
+
+## Future improvements
+
+- Add PHPStan for static analysis
+- Add Makefile to aid with running commands and setup
